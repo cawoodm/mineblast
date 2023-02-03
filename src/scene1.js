@@ -1,6 +1,6 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
 
-function Scene1(scene, config) {
+function Scene1(scene, player, config) {
   const color = [
     new THREE.MeshStandardMaterial({ color: 0x338833 }),
     new THREE.MeshStandardMaterial({ color: 0xcccccc }),
@@ -22,13 +22,20 @@ function Scene1(scene, config) {
       }
     }
   }
+
+  player.position.set(...worldPos(10, 4));
+
   function boxel(x, y) {
     let w = W * 0.8;
     let h = H * 0.8;
     const box = new THREE.Mesh(new THREE.PlaneGeometry(w, h), color[1]);
     //const box = new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.1), color[1]);
-    box.position.set(W / 2 + x * W, H / 2 + y * H, 0);
+    box.position.set(...worldPos(x, y));
     scene.add(box);
+  }
+
+  function worldPos(x, y) {
+    return [config.blockWidth / 2 + config.blockWidth * x, config.blockHeight / 2 + config.blockHeight * y, 5];
   }
 }
 

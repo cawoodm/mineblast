@@ -24,12 +24,15 @@ class Main {
     renderer = new THREE.WebGLRenderer({
       antialias: true,
     });
+
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
     //renderer.domElement.style.imageRendering = 'pixelated';
     renderer.setPixelRatio(window.devicePixelRatio);
-    let windowScale = 3; // window.innerWidth / _W; // Math.min(Math.floor(window.innerWidth / _W), Math.floor(window.innerHeight / _H));
+    let windowScale = window.innerWidth / config.XW; // Math.min(Math.floor(window.innerWidth / _W), Math.floor(window.innerHeight / _H));
     let windowSize = { w: windowScale * config.XW, h: windowScale * config.YH };
     let windowAspect = windowSize.w / windowSize.h;
-    // console.log("scale=", windowScale, "aspect=", windowAspect, "size=", windowSize);
     renderer.setSize(windowSize.w, windowSize.h);
     document.body.appendChild(renderer.domElement);
     window.addEventListener("resize", this._OnWindowResize.bind(this), false);
@@ -43,21 +46,16 @@ class Main {
     controls.target.set(160, 120, 0);
     controls.update();
 
-    Scene1(scene, config);
+    this.player = Player(config);
+    scene.add(this.player);
+    Scene1(scene, this.player, config);
 
     //scene.add(new THREE.AxesHelper(5));
     scene.add(background);
 
-    this.player = Player(config);
-    scene.add(this.player);
-    this.player.position.set(...worldPos(10, 4));
-
     // scene.background = texture;
 
     this._RAF();
-    function worldPos(x, y) {
-      return [config.blockWidth / 2 + config.blockWidth * x, config.blockHeight / 2 + config.blockHeight * y, 0];
-    }
   }
 
   _OnWindowResize() {

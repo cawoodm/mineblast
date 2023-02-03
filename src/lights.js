@@ -2,10 +2,10 @@ import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.mod
 
 let lights = [];
 let light = new THREE.DirectionalLight(0xffffff, 1.0);
-lights.push(light);
-light.position.set(-290, 290, 220);
-light.target.position.set(0, 0, 0);
-light.castShadow = true;
+// lights.push(light);
+// light.position.set(0, 200, 100);
+// light.target.position.set(0, 0, 0);
+// light.castShadow = true;
 // light.shadow.bias = -0.001;
 // light.shadow.mapSize.width = 2048;
 // light.shadow.mapSize.height = 2048;
