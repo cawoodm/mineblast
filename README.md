@@ -2,6 +2,8 @@
 
 A 2D look game in a 3D world with three.js.
 
+![Screenshot](docs/screen1.png)
+
 ## Goals
 
 - Get a finished game running with threeJS
