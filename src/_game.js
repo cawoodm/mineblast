@@ -3,11 +3,12 @@ import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.mod
 import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/controls/OrbitControls.js";
 import { lights } from "./lights";
 import { Renderer } from "./renderer";
+import { Entities } from "./entities";
 import { Camera } from "./camera";
 import { background } from "./background";
 import { Player } from "./player";
 import { Scene1 } from "./scene1";
-import { Bullet } from "./bullet";
+import { Collider } from "./CollisionGrid";
 
 const config = {
   XW: 320,
@@ -20,20 +21,20 @@ const config = {
 };
 
 function Game() {
-  let camera, renderer, player, scene, entities;
-  entities = [];
+  let state, camera, renderer, player, scene, entities;
+  entities = new Entities({ onAdd, onRemove });
   scene = new THREE.Scene();
-  let sys = { config, scene, entities };
+  let sys = { state, config, scene, player, entities, camera, renderer };
 
-  renderer = new Renderer(config);
+  sys.renderer = new Renderer(config);
 
   lights.forEach((light) => scene.add(light));
   config.windowAspect = config.windowSize.w / config.windowSize.h;
-  camera = Camera(config.XW, config.YH, config.windowScale, config.windowAspect);
+  sys.camera = Camera(config.XW, config.YH, config.windowScale, config.windowAspect);
 
-  player = Player(sys);
+  sys.player = Player(sys);
 
-  Scene1(scene, player, config);
+  Scene1(sys);
 
   scene.add(background);
 
@@ -44,7 +45,7 @@ function Game() {
   window.addEventListener("keydown", keypress.bind(this), false);
   window.addEventListener("resize", windowResize.bind(this), false);
   this.update = function () {
-    this.entities.forEach((e) => {
+    this.entities.e.forEach((e) => {
       if (typeof e.update === "function") e.update();
     });
   };
@@ -52,26 +53,37 @@ function Game() {
     window.requestAnimationFrame(this.loop.bind(this));
   };
   this.loop = function () {
+    if (this.state === "paused") return;
     this.renderer.render(scene, this.camera);
     this.update();
     this.run();
   };
   this.run();
-  Object.assign(this, { camera, renderer, player, scene, entities });
+  Object.assign(this, sys);
   return this;
+  function onAdd(e) {
+    // dp("Entity added", e);
+  }
+  function onRemove(e) {
+    // dp("Entity removed", e);
+  }
 }
 
 function shoot() {
   _APP.player.shoot();
 }
+function pause() {
+  _APP.state = _APP.state === "paused" ? "running" : "paused";
+}
 function keypress(e) {
   dp("Keypress", e.code);
   e.preventDefault();
-  e.stopPropagation();
-  if (e.code === "Space") return shoot();
-  if (e.code === "ArrowLeft") return _APP.player.left();
-  if (e.code === "ArrowRight") return _APP.player.right();
+  // e.stopPropagation();
+  if (["ArrowUp", "KeyW"].includes(e.code)) return shoot();
+  if (["ArrowLeft", "KeyA"].includes(e.code)) return _APP.player.left();
+  if (["ArrowRight", "KeyD"].includes(e.code)) return _APP.player.right();
   if (e.code === "KeyS") console.log(_APP.scene);
+  if (e.code === "KeyP") pause();
 }
 const dp = console.log.bind(console);
 function windowResize() {
@@ -82,8 +94,8 @@ function windowResize() {
 }
 
 let _APP = null;
-let scene;
 
 window.addEventListener("DOMContentLoaded", () => {
   _APP = new Game();
+  window._APP = _APP;
 });

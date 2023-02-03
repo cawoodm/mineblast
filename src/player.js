@@ -29,7 +29,7 @@ function Player({ config, scene, entities }) {
     bullet.position.set(player.position.x + 1.5 * config.blockWidth, player.position.y + 4 * config.blockHeight, 0);
     player.add(bullet);
     scene.add(bullet);
-    entities.push(bullet);
+    entities.add(bullet);
     //console.log(entities);
   };
   player.update = function (d) {
@@ -37,7 +37,7 @@ function Player({ config, scene, entities }) {
   };
   player.speed = { x: 0, y: 0 };
   scene.add(player);
-  entities.push(player);
+  entities.add(player);
   return player;
 }
 
