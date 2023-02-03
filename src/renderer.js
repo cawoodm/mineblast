@@ -1,4 +1,4 @@
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 
 function Renderer(config) {
   const renderer = new THREE.WebGLRenderer({
@@ -21,4 +21,4 @@ function Renderer(config) {
   return renderer;
 }
 
-export { Renderer };
+export {Renderer};

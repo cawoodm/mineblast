@@ -1,4 +1,4 @@
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 
 let lights = [];
 let light = new THREE.DirectionalLight(0xffffff, 1.0);
@@ -20,4 +20,4 @@ light.position.set(0, 200, 100);
 
 lights.push(new THREE.AmbientLight(0x999999));
 
-export { lights };
+export {lights};

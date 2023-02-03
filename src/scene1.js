@@ -1,28 +1,28 @@
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
-import { Boxel } from "./boxel";
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
+import {Boxel} from './boxel';
 
-function Scene1({ config, scene, entities, player }) {
+function Scene1({config, scene, entities, player}) {
   const materials = {
-    floor: new THREE.MeshStandardMaterial({ color: 0x338833 }),
-    roof: new THREE.MeshStandardMaterial({ color: 0xcccccc }),
-    blue: new THREE.MeshStandardMaterial({ color: 0x0000dd }),
-    collider: new THREE.MeshStandardMaterial({ color: 0x880000, transparent: true, opacity: 0.5 }),
+    floor: new THREE.MeshStandardMaterial({color: 0x338833}),
+    roof: new THREE.MeshStandardMaterial({color: 0xcccccc}),
+    blue: new THREE.MeshStandardMaterial({color: 0x0000dd}),
+    collider: new THREE.MeshStandardMaterial({color: 0x880000, transparent: true, opacity: 0.5}),
   };
 
-  const { boxel, worldPos } = Boxel({ config, scene, entities });
+  const {boxel, worldPos} = Boxel({config, scene, entities});
   let W = config.blockWidth;
   let H = config.blockHeight;
   let X = config.XW / W;
   let Y = config.YH / H;
   for (let x = 0; x < X; x++)
     for (let y = 0; y < Y; y++)
-      if (y <= 3) boxi(x, y, "floor", materials.floor);
-      else if (y > Y - 7) boxi(x, y, "roof", materials.roof);
+      if (y <= 3) boxi(x, y, 'floor', materials.floor);
+      else if (y > Y - 7) boxi(x, y, 'roof', materials.roof);
 
   // Add a collision box the size of our scene to stop player leaving
-  boxi(0, 4, "boundsLeft", config.showColliders && materials.collider);
+  boxi(0, 4, 'boundsLeft', config.showColliders && materials.collider);
 
-  player.mesh.position.set(...worldPos(10, 4));
+  player.mesh.position.set(...worldPos(10, 4), 0);
 
   function boxi() {
     // if (arguments[2] === "roof") console.log(arguments[1]);
@@ -30,4 +30,4 @@ function Scene1({ config, scene, entities, player }) {
   }
 }
 
-export { Scene1 };
+export {Scene1};

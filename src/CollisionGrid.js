@@ -13,13 +13,14 @@ function Collider(config) {
   let objWidth = 1;
   let objHeight = 1;
   this.grid = [];
-  for (let y = 0; y < Y; y++) this.grid.push(Array.from({ length: X }, () => []));
+  for (let y = 0; y < Y; y++) this.grid.push(Array.from({length: X}, () => []));
   /**
    *
    * @param {*} obj
    */
   this.add = function (obj) {
     // Index object to grid overlap zone
+    console.log('add', obj);
     let X1 = Math.floor(obj.x / W);
     let X2 = Math.ceil(objWidth + obj.x / W);
     let Y1 = Math.floor(obj.y / H);
@@ -47,4 +48,4 @@ function Collider(config) {
   return this;
 }
 
-export { Collider };
+export {Collider};

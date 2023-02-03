@@ -5,7 +5,7 @@
 function Bullet(boxel) {
   const speed = 0.3;
   // let mat = new THREE.MeshStandardMaterial({ color: 0xff0000 });
-  return boxel(0, 0, "bullet", 0xcc0000, function (delta) {
+  return boxel(0, 0, 'bullet', 0xcc0000, function (delta) {
     // TODO: Collision detection
     //console.log("bullet", this.position);
     this.mesh.position.y += (speed * delta) / 10;
@@ -16,4 +16,4 @@ function Bullet(boxel) {
   // return this;
 }
 
-export { Bullet };
+export {Bullet};
