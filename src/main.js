@@ -4,11 +4,16 @@ import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.118/examples
 import { lights } from "./lights.js";
 import { Camera } from "./camera.js";
 import { background } from "./background.js";
-import { player } from "./player.js";
+import { Player } from "./player.js";
 import { Scene1 } from "./scene1.js";
 
-const _W = 320;
-const _H = 240;
+const config = {
+  XW: 320,
+  YH: 240,
+  blockWidth: 5,
+  blockHeight: 5,
+  blockScale: 0.8,
+};
 
 class Main {
   constructor() {
@@ -19,33 +24,40 @@ class Main {
     renderer = new THREE.WebGLRenderer({
       antialias: true,
     });
+    //renderer.domElement.style.imageRendering = 'pixelated';
     renderer.setPixelRatio(window.devicePixelRatio);
-    let windowScale = 2; // Math.min(Math.floor(window.innerWidth / _W), Math.floor(window.innerHeight / _H));
-    let windowSize = { w: windowScale * _W, h: windowScale * _H };
+    let windowScale = 3; // window.innerWidth / _W; // Math.min(Math.floor(window.innerWidth / _W), Math.floor(window.innerHeight / _H));
+    let windowSize = { w: windowScale * config.XW, h: windowScale * config.YH };
     let windowAspect = windowSize.w / windowSize.h;
     // console.log("scale=", windowScale, "aspect=", windowAspect, "size=", windowSize);
-    renderer.setSize(windowSize.w, windowSize.h, true);
+    renderer.setSize(windowSize.w, windowSize.h);
     document.body.appendChild(renderer.domElement);
     window.addEventListener("resize", this._OnWindowResize.bind(this), false);
 
     scene = new THREE.Scene();
 
     lights.forEach((light) => scene.add(light));
-    this.camera = Camera(_W, _H, windowScale, windowAspect);
+    this.camera = Camera(config.XW, config.YH, windowScale, windowAspect);
 
     const controls = new OrbitControls(this.camera, renderer.domElement);
     controls.target.set(160, 120, 0);
     controls.update();
 
-    Scene1(scene);
+    Scene1(scene, config);
 
     //scene.add(new THREE.AxesHelper(5));
     scene.add(background);
-    scene.add(player);
+
+    this.player = Player(config);
+    scene.add(this.player);
+    this.player.position.set(...worldPos(10, 4));
 
     // scene.background = texture;
 
     this._RAF();
+    function worldPos(x, y) {
+      return [config.blockWidth / 2 + config.blockWidth * x, config.blockHeight / 2 + config.blockHeight * y, 0];
+    }
   }
 
   _OnWindowResize() {
