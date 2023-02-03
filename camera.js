@@ -5,7 +5,7 @@ function Camera(w, h, scale, aspect) {
   const camera = new THREE.OrthographicCamera(-viewBlock * aspect, viewBlock * aspect, viewBlock, -viewBlock, 100, -100);
   // let camera = new THREE.PerspectiveCamera(60, w / h, 1.0, 1000.0);
   camera.position.set(w / 2, h / 2, 100);
-  camera.zoom = scale;
+  //camera.zoom = 3; // scale; // Has no effect!
   return camera;
 }
 
