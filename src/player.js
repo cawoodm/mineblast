@@ -28,10 +28,15 @@ function Player({config, entities}) {
       //block.castShadow = true;
     }
   this.left = function () {
-    if (this.speed.x >= 0) this.speed.x -= 1;
+    this.direction = -1;
+    this.start = true;
+    this.speed.x = 0;
+    //if (this.speed.x >= 0) this.speed.x -= 1;
   };
   this.right = function () {
-    if (this.speed.x <= 0) this.speed.x += 1;
+    this.direction = 1;
+    this.start = true;
+    this.speed.x = 0;
   };
   this.shoot = function () {
     let bullet = Bullet(boxel);
@@ -39,13 +44,35 @@ function Player({config, entities}) {
     entities.add(bullet);
   };
   this.update = function (delta) {
+    // Easing
+    if (this.start) {
+      this.timer = Date.now();
+      this.timerOffset = 0;
+      this.start = false;
+    }
+    if (this.direction) {
+      let t = Date.now() - this.timer;
+      let maxSpeed = 3;
+      let duration = 300; // 1s
+      if (t >= duration) {
+        this.direction = 0;
+        this.speed.x = 0;
+      } else {
+        this.speed.x = this.direction * easeInOutQuad(t, 0, maxSpeed, duration);
+      }
+    }
     // TODO: Collision detection
-    //this.mesh.position.x += this.speed.x;
     let newX = this.mesh.position.x + (this.speed.x * delta) / 10;
     if (newX < 0 || newX >= config.XW - 3 * config.blockWidth) this.speed.x = 0;
     else this.mesh.position.x = newX;
     //console.log("Player speed", this.mesh.position.x, this.speed.x, (this.speed.x * delta) / 10);
   };
+  function easeInOutQuad(t, b, c, d) {
+    t /= d / 2;
+    if (t < 1) return (c / 2) * t * t + b;
+    t--;
+    return (-c / 2) * (t * (t - 2) - 1) + b;
+  }
   this.speed = {x: 0, y: 0};
   this.tag = 'player';
   return this;

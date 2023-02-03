@@ -1,6 +1,6 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 import Stats from 'stats.js';
-import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/controls/OrbitControls.js';
+// import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/controls/OrbitControls.js';
 import {lights} from './lights';
 import {Renderer} from './renderer';
 import {Entities} from './entities';
@@ -47,9 +47,9 @@ function Game() {
   lights.forEach((light) => scene.add(light));
 
   // scene.add(new THREE.CameraHelper(camera));
-  const controls = new OrbitControls(G.camera, G.renderer.domElement);
-  controls.target.set(160, 120, 0);
-  controls.update();
+  // const controls = new OrbitControls(G.camera, G.renderer.domElement);
+  // controls.target.set(160, 120, 0);
+  // controls.update();
   // scene.add(new THREE.AxesHelper(5));
 
   window.addEventListener('keydown', keypress.bind(this), false);
