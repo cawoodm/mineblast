@@ -2,7 +2,7 @@ import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.mod
 
 let mat2 = new THREE.MeshLambertMaterial({
   //color: 0xeeeeee,
-  color: 0x330033,
+  color: 0x222233,
   //color: 0x996699,
   opacity: 1,
   blending: THREE.NoBlending,

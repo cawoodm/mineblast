@@ -1,6 +1,6 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
 import Stats from "stats.js";
-import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/controls/OrbitControls.js";
+// import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/controls/OrbitControls.js";
 import { lights } from "./lights";
 import { Renderer } from "./renderer";
 import { Entities } from "./entities";
@@ -18,26 +18,31 @@ const config = {
   blockScale: 0.8,
   windowScale: 1,
   windowSize: { w: window.innerWidth, h: window.innerHeight },
+  showColliders: true,
 };
+config.windowAspect = config.windowSize.w / config.windowSize.h;
 
 function Game() {
-  let state, camera, renderer, player, scene, entities;
-  entities = new Entities({ onAdd, onRemove });
-  scene = new THREE.Scene();
-  let sys = { state, config, scene, player, entities, camera, renderer };
+  let G = { config };
+  G.systems = {};
+  G.scene = new THREE.Scene();
+  G.entities = new Entities({ onAdd, onRemove, scene: G.scene });
+  G.renderer = new Renderer(G.config);
+  G.state = { running: false };
+  G.camera = Camera(G.config.XW, G.config.YH, G.config.windowScale, G.config.windowAspect);
+  G.player = new Player(G);
+  G.state = {};
 
-  sys.renderer = new Renderer(config);
-  sys.state = { running: false };
+  let { systems, entities, scene, player } = G;
 
-  lights.forEach((light) => scene.add(light));
-  config.windowAspect = config.windowSize.w / config.windowSize.h;
-  sys.camera = Camera(config.XW, config.YH, config.windowScale, config.windowAspect);
+  systems.gridCollider = new Collider(config);
+  entities.add(systems.gridCollider);
 
-  sys.player = Player(sys);
-
-  Scene1(sys);
+  Scene1({ config, scene, entities, player });
 
   scene.add(background);
+
+  lights.forEach((light) => scene.add(light));
 
   // scene.add(new THREE.CameraHelper(camera));
   // const controls = new OrbitControls(camera, renderer.domElement); controls.target.set(160, 120, 0); controls.update();
@@ -45,29 +50,45 @@ function Game() {
 
   window.addEventListener("keydown", keypress.bind(this), false);
   window.addEventListener("resize", windowResize.bind(this), false);
-  this.update = function () {
+  this.update = function (timestamp) {
+    let delta = G.state.timestamp ? timestamp - G.state.timestamp : 0;
     this.entities.e.forEach((e) => {
-      if (typeof e.update === "function") e.update();
+      if (typeof e.update === "function") e.update(delta);
     });
+    G.state.timestamp = timestamp;
   };
   this.run = function () {
     this.state.running = true;
     window.requestAnimationFrame(this.loop.bind(this));
   };
-  this.loop = function () {
+  this.render = function () {
+    this.renderer.render(scene, this.camera);
+  };
+  this.loop = function (d) {
     if (!this.state.running) return;
     // requestAnimationFrame(function sloop() {stats.update(); requestAnimationFrame(sloop)});
-    this.renderer.render(scene, this.camera);
-    this.update();
-    this.run();
+    this.update(d);
+    this.render();
+    window.requestAnimationFrame(this.loop.bind(this));
   };
-  Object.assign(this, sys);
+  systems.gridCollider.update = function (delta) {
+    // dp("gridCollider", delta);
+    let bullets = entities.getByTag("bullet");
+    bullets.forEach((bullet) => {
+      let collidesWith = this.collides({ x: bullet.mesh.position.x / config.blockWidth, y: bullet.mesh.position.y / config.blockHeight });
+      dp("collidesWith", collidesWith);
+    });
+  };
+  Object.assign(this, G);
   this.run();
   return this;
   function onAdd(e) {
+    // Add entity to collider if it has the "collision" Component
+    if (e.collider?.grid) systems.gridCollider.add(e.collider.grid);
     // dp("Entity added", e);
   }
   function onRemove(e) {
+    if (e.collider?.grid) systems.gridCollider.remove(e.collider.grid);
     // dp("Entity removed", e);
   }
 }
@@ -76,13 +97,12 @@ function shoot() {
   _APP.player.shoot();
 }
 function pause() {
-  _APP.state.running = _APP.state.running || false;
+  _APP.state.running = _APP.state.running === true ? false : true;
 }
 function stats() {
   _APP.stats.dom.style.display = _APP.stats.dom.style.display === "none" ? "" : "none";
 }
 function keypress(e) {
-  dp("Keypress", e);
   let res = null;
   if (!e.altKey && !e.ctrlKey) {
     if (["ArrowUp", "KeyW"].includes(e.code)) res = shoot();
@@ -93,12 +113,15 @@ function keypress(e) {
     else if (e.code === "KeyO") res = stats();
     else return;
   } else return;
-  if (res === null) e.preventDefault();
+  if (res === null) {
+    e.preventDefault();
+    dp("Unhandled keypress", e);
+  }
   return res;
 }
 const dp = console.log.bind(console);
 function windowResize() {
-  console.log(this.camera.aspect);
+  // console.log(this.camera.aspect);
   // this.camera.aspect = window.innerWidth / window.innerHeight;
   // this.camera.updateProjectionMatrix();
   // renderer.setSize(window.innerWidth, window.innerHeight);

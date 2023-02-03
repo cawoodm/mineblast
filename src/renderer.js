@@ -6,8 +6,8 @@ function Renderer(config) {
     antialias: true,
   });
 
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  //renderer.shadowMap.enabled = true;
+  //renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
   //renderer.domElement.style.imageRendering = 'pixelated';
   renderer.setPixelRatio(window.devicePixelRatio);
