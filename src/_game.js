@@ -1,5 +1,5 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
-
+import Stats from "stats.js";
 import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/controls/OrbitControls.js";
 import { lights } from "./lights";
 import { Renderer } from "./renderer";
@@ -27,6 +27,7 @@ function Game() {
   let sys = { state, config, scene, player, entities, camera, renderer };
 
   sys.renderer = new Renderer(config);
+  sys.state = { running: false };
 
   lights.forEach((light) => scene.add(light));
   config.windowAspect = config.windowSize.w / config.windowSize.h;
@@ -50,16 +51,18 @@ function Game() {
     });
   };
   this.run = function () {
+    this.state.running = true;
     window.requestAnimationFrame(this.loop.bind(this));
   };
   this.loop = function () {
-    if (this.state === "paused") return;
+    if (!this.state.running) return;
+    // requestAnimationFrame(function sloop() {stats.update(); requestAnimationFrame(sloop)});
     this.renderer.render(scene, this.camera);
     this.update();
     this.run();
   };
-  this.run();
   Object.assign(this, sys);
+  this.run();
   return this;
   function onAdd(e) {
     // dp("Entity added", e);
@@ -73,7 +76,10 @@ function shoot() {
   _APP.player.shoot();
 }
 function pause() {
-  _APP.state = _APP.state === "paused" ? "running" : "paused";
+  _APP.state.running = _APP.state.running || false;
+}
+function stats() {
+  _APP.stats.dom.style.display = _APP.stats.dom.style.display === "none" ? "" : "none";
 }
 function keypress(e) {
   dp("Keypress", e.code);
@@ -84,6 +90,7 @@ function keypress(e) {
   if (["ArrowRight", "KeyD"].includes(e.code)) return _APP.player.right();
   if (e.code === "KeyS") console.log(_APP.scene);
   if (e.code === "KeyP") pause();
+  if (e.code === "KeyO") stats();
 }
 const dp = console.log.bind(console);
 function windowResize() {
@@ -97,5 +104,11 @@ let _APP = null;
 
 window.addEventListener("DOMContentLoaded", () => {
   _APP = new Game();
+  _APP.stats = new Stats();
+  document.body.appendChild(_APP.stats.dom);
+  requestAnimationFrame(function sloop() {
+    _APP.stats.update();
+    requestAnimationFrame(sloop);
+  });
   window._APP = _APP;
 });
