@@ -82,15 +82,19 @@ function stats() {
   _APP.stats.dom.style.display = _APP.stats.dom.style.display === "none" ? "" : "none";
 }
 function keypress(e) {
-  dp("Keypress", e.code);
-  e.preventDefault();
-  // e.stopPropagation();
-  if (["ArrowUp", "KeyW"].includes(e.code)) return shoot();
-  if (["ArrowLeft", "KeyA"].includes(e.code)) return _APP.player.left();
-  if (["ArrowRight", "KeyD"].includes(e.code)) return _APP.player.right();
-  if (e.code === "KeyS") console.log(_APP.scene);
-  if (e.code === "KeyP") pause();
-  if (e.code === "KeyO") stats();
+  dp("Keypress", e);
+  let res = null;
+  if (!e.altKey && !e.ctrlKey) {
+    if (["ArrowUp", "KeyW"].includes(e.code)) res = shoot();
+    else if (["ArrowLeft", "KeyA"].includes(e.code)) res = _APP.player.left();
+    else if (["ArrowRight", "KeyD"].includes(e.code)) res = _APP.player.right();
+    else if (e.code === "KeyS") res = console.log(_APP.scene);
+    else if (e.code === "KeyP") res = pause();
+    else if (e.code === "KeyO") res = stats();
+    else return;
+  } else return;
+  if (res === null) e.preventDefault();
+  return res;
 }
 const dp = console.log.bind(console);
 function windowResize() {
