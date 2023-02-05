@@ -82,10 +82,12 @@ function Game() {
     // dp("gridCollider", delta);
     let bullets = entities.getByTag('bullet');
     bullets.forEach((bullet) => {
-      if (G.state.debug) debugger;
-      this.collides({x: bullet.mesh.position.x, y: bullet.mesh.position.y}).forEach((e) => {
-        dp('collidesWith', e.tags);
+      this.collides({x: bullet.mesh.position.x, y: bullet.mesh.position.y, w: bullet.collider.grid.w, h: bullet.collider.grid.h}).forEach((e) => {
+        // dp('collidesWith', e.tags);
         G.entities.removeById(e.id);
+        // console.log('Bullet remove', bullet.mesh.id);
+        // TODO: Bullet should take hit damage and disintegrate
+        //G.entities.remove(bullet);
       });
     });
   };
@@ -94,7 +96,7 @@ function Game() {
   return this;
   function onAdd(e) {
     // Add static collision entities to collider
-    if (e.collider?.grid && e.tags.includes('static')) systems.gridCollider.add({...e.collider.grid, tags: e.tags, id: e.id});
+    if (e.collider?.grid && e.tags.includes('static')) systems.gridCollider.add(e.collider.grid);
     if (e.boxels)
       e.boxels.forEach((b) => {
         systems.gridCollider.add({...b.collider.grid, tags: e.tags});
@@ -102,8 +104,8 @@ function Game() {
     // dp("Entity added", e);
   }
   function onRemove(e) {
-    //if (e.collider?.grid) systems.gridCollider.remove(e.collider.grid);
-    // dp("Entity removed", e);
+    if (e.collider?.grid && e.tags.includes('static')) systems.gridCollider.remove(e.collider.grid);
+    dp('Entity removed', e);
   }
 }
 

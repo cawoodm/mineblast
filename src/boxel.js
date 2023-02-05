@@ -15,13 +15,16 @@ function Boxel({config}) {
       let h = H * 0.8;
       if (typeof material === 'number') material = new THREE.MeshStandardMaterial({color: material});
       const mesh = material && new THREE.Mesh(new THREE.PlaneGeometry(w, h), material);
+      let id = 'boxel_' + mesh.id;
       //const box = new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.1), material[1]);
       let [worldX, worldY] = worldPosCenter(x, y);
+      if (id === 'boxel_133') console.log('boxel_133', worldX, worldY);
       if (mesh) mesh.position.set(worldX, worldY, 0);
       return {
+        id,
         tags,
         mesh,
-        collider: {grid: {x: worldX, y: worldY, w: config.blockWidth, h: config.blockHeight}},
+        collider: {grid: {id, tags, x: worldX, y: worldY, w: config.blockWidth, h: config.blockHeight}},
         update,
       };
     },

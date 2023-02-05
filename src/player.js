@@ -4,6 +4,7 @@ import {Bullet} from './bullet';
 
 function Player({config, entities}) {
   let {boxel} = Boxel({config});
+  this.id = 'player';
   this.speed = {x: 0, y: 0};
   this.mesh = new THREE.Group();
   this.boxels = [];
