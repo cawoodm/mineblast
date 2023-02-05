@@ -10,7 +10,7 @@ function Boxel({config}) {
   let H = config.blockHeight;
   return {
     worldPos,
-    boxel(x, y, tag, material, update) {
+    boxel(x, y, tags, material, update) {
       let w = W * 0.8;
       let h = H * 0.8;
       if (typeof material === 'number') material = new THREE.MeshStandardMaterial({color: material});
@@ -18,12 +18,10 @@ function Boxel({config}) {
       //const box = new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.1), material[1]);
       let [worldX, worldY] = worldPosCenter(x, y);
       if (mesh) mesh.position.set(worldX, worldY, 0);
-      let grid;
-      if (tag === 'player') grid = {x: worldX, y: worldY, w: config.blockWidth, h: config.blockHeight};
       return {
-        tag,
+        tags,
         mesh,
-        collider: {grid},
+        collider: {grid: {x: worldX, y: worldY, w: config.blockWidth, h: config.blockHeight}},
         update,
       };
     },

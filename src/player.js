@@ -40,6 +40,7 @@ function Player({config, entities}) {
   };
   this.shoot = function () {
     let bullet = Bullet(boxel);
+    // TODO: Mesh position is center of block!
     bullet.mesh.position.set(this.mesh.position.x + 1.5 * config.blockWidth, this.mesh.position.y + 4 * config.blockHeight, this.mesh.position.z);
     entities.add(bullet);
   };
@@ -61,6 +62,11 @@ function Player({config, entities}) {
         this.speed.x = this.direction * easeInOutQuart(t, 0, maxSpeed, duration);
       }
     }
+    // Update collision grid of my boxels
+    this.boxels.forEach((boxel) => {
+      boxel.collider.grid.x = this.mesh.position.x + boxel.mesh.position.x;
+      boxel.collider.grid.y = this.mesh.position.y + boxel.mesh.position.y;
+    });
     // TODO: Collision detection
     let newX = this.mesh.position.x + (this.speed.x * delta) / 10;
     if (newX < 0 || newX >= config.XW - 3 * config.blockWidth) this.speed.x = 0;
@@ -82,7 +88,7 @@ function Player({config, entities}) {
     return (1 - amt) * start + amt * end;
   }
   this.speed = {x: 0, y: 0};
-  this.tag = 'player';
+  this.tags = ['player'];
   return this;
 }
 

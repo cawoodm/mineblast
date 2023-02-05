@@ -16,17 +16,16 @@ function Scene1({config, scene, entities, player}) {
   let Y = config.YH / H;
   for (let x = 0; x < X; x++)
     for (let y = 0; y < Y; y++)
-      if (y <= 3) boxi(x, y, 'floor', materials.floor);
-      else if (y > Y - 7) boxi(x, y, 'roof', materials.roof);
+      if (y <= 3) boxi(x, y, ['static', 'floor'], materials.floor);
+      else if (y > Y - 7) boxi(x, y, ['static', 'roof'], materials.roof);
 
   // Add a collision box the size of our scene to stop player leaving
   boxi(0, 4, 'boundsLeft', config.showColliders && materials.collider);
 
   player.mesh.position.set(...worldPos(10, 4), 0);
 
-  function boxi() {
-    // if (arguments[2] === "roof") console.log(arguments[1]);
-    entities.add(boxel(...arguments));
+  function boxi(x, y, tags, mat) {
+    entities.add(boxel(x, y, tags, mat));
   }
 }
 

@@ -68,10 +68,13 @@ function Game() {
   this.render = function () {
     this.renderer.render(scene, this.camera);
   };
-  this.loop = function (d) {
-    if (!this.state.running) return;
+  this.loop = function (timestamp) {
+    if (!this.state.running) {
+      this.state.timestamp = 0;
+      return;
+    }
     // requestAnimationFrame(function sloop() {stats.update(); requestAnimationFrame(sloop)});
-    this.update(d);
+    this.update(timestamp);
     this.render();
     window.requestAnimationFrame(this.loop.bind(this));
   };
@@ -79,24 +82,27 @@ function Game() {
     // dp("gridCollider", delta);
     let bullets = entities.getByTag('bullet');
     bullets.forEach((bullet) => {
-      let collidesWith = this.collides({x: bullet.mesh.position.x / config.blockWidth, y: bullet.mesh.position.y / config.blockHeight});
-      dp('collidesWith', collidesWith);
+      if (G.state.debug) debugger;
+      this.collides({x: bullet.mesh.position.x, y: bullet.mesh.position.y}).forEach((e) => {
+        dp('collidesWith', e.tags);
+        G.entities.removeById(e.id);
+      });
     });
   };
   Object.assign(this, G);
   this.run();
   return this;
   function onAdd(e) {
-    // Add entity to collider if it has the "collision" Component
-    if (e.collider?.grid) systems.gridCollider.add({...e.collider.grid, tag: e.tags});
+    // Add static collision entities to collider
+    if (e.collider?.grid && e.tags.includes('static')) systems.gridCollider.add({...e.collider.grid, tags: e.tags, id: e.id});
     if (e.boxels)
       e.boxels.forEach((b) => {
-        systems.gridCollider.add({...b.collider.grid, tag: e.tag});
+        systems.gridCollider.add({...b.collider.grid, tags: e.tags});
       });
     // dp("Entity added", e);
   }
   function onRemove(e) {
-    if (e.collider?.grid) systems.gridCollider.remove(e.collider.grid);
+    //if (e.collider?.grid) systems.gridCollider.remove(e.collider.grid);
     // dp("Entity removed", e);
   }
 }
@@ -106,10 +112,16 @@ function shoot() {
 }
 function pause() {
   _APP.state.running = _APP.state.running === true ? false : true;
+  if (_APP.state.running) _APP.run();
+}
+function debug() {
+  console.log('debug');
+  _APP.state.debug = _APP.state.debug === true ? false : true;
 }
 function stats() {
   _APP.stats.dom.style.display = _APP.stats.dom.style.display === 'none' ? '' : 'none';
 }
+// eslint-disable-next-line complexity
 function keypress(e) {
   let res = null;
   if (!e.altKey && !e.ctrlKey) {
@@ -118,6 +130,7 @@ function keypress(e) {
     else if (['ArrowRight', 'KeyD'].includes(e.code)) res = _APP.player.right();
     else if (e.code === 'KeyS') res = console.log(_APP.scene);
     else if (e.code === 'KeyP') res = pause();
+    else if (e.code === 'KeyX') res = debug();
     else if (e.code === 'KeyO') res = stats();
     else return;
   } else return;
@@ -127,7 +140,9 @@ function keypress(e) {
   }
   return res;
 }
-const dp = console.log.bind(console);
+function dp() {
+  if (_APP.state.debug) console.log(...arguments);
+}
 function windowResize() {
   // console.log(this.camera.aspect);
   // this.camera.aspect = window.innerWidth / window.innerHeight;

@@ -33,9 +33,9 @@ function Collider(config) {
   this.collides = function (obj) {
     // Narrow search range to only grid overlap zone
     let X1 = Math.floor(obj.x / W);
-    let X2 = Math.ceil(objWidth + obj.x / W);
+    let X2 = Math.ceil((objWidth + obj.x) / W);
     let Y1 = Math.floor(obj.y / H);
-    let Y2 = Math.ceil(objHeight + obj.y / H);
+    let Y2 = Math.ceil((objHeight + obj.y) / H);
     let res = [];
     for (let y = Y1; y < Y2 && y < this.grid.length; y++)
       for (let x = X1; x < X2 && x < this.grid[0].length; x++)
@@ -44,8 +44,24 @@ function Collider(config) {
         });
     return res;
   };
+  this.remove = function (obj) {
+    let X1 = Math.floor(obj.x / W);
+    let X2 = Math.ceil((objWidth + obj.x) / W);
+    let Y1 = Math.floor(obj.y / H);
+    let Y2 = Math.ceil((objHeight + obj.y) / H);
+    for (let y = Y1; y < Y2 && y < this.grid.length; y++)
+      for (let x = X1; x < X2 && x < this.grid[0].length; x++) {
+        removeFromArray(this.grid[y][x], obj);
+      }
+  };
 
   return this;
+}
+
+function removeFromArray(arr, o) {
+  const index = arr.indexOf(o);
+  if (!index) throw new Error('CollisionGrid cannot remove unknown object', o);
+  if (index) arr.splice(index, 1);
 }
 
 export {Collider};
