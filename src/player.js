@@ -29,20 +29,21 @@ function Player({config, entities}) {
       //block.castShadow = true;
     }
   this.left = function () {
+    if (this.direction === -1) return; // Already moving left
     this.direction = -1;
     this.start = true;
-    this.speed.x = 0;
     //if (this.speed.x >= 0) this.speed.x -= 1;
   };
   this.right = function () {
+    if (this.direction === 1) return; // Already moving right
     this.direction = 1;
     this.start = true;
-    this.speed.x = 0;
+    // if (this.direction === -1) this.speed.x = 0;
   };
   this.shoot = function () {
     let bullet = Bullet(boxel);
     // TODO: Mesh position is center of block!
-    bullet.mesh.position.set(this.mesh.position.x + 1.5 * config.blockWidth, this.mesh.position.y + 4 * config.blockHeight, this.mesh.position.z);
+    bullet.mesh.position.set(this.mesh.position.x + 2 * config.blockWidth, this.mesh.position.y + 4 * config.blockHeight, this.mesh.position.z);
     entities.add(bullet);
   };
   this.update = function (delta) {

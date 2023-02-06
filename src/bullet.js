@@ -3,7 +3,7 @@
  * A Bullet is a boxel which moves
  */
 function Bullet(boxel) {
-  const speed = 3;
+  const speed = 4;
   // let mat = new THREE.MeshStandardMaterial({ color: 0xff0000 });
   let me = boxel(0, 0, 'bullet', 0xcc0000, function (delta) {
     // TODO: Collision detection
