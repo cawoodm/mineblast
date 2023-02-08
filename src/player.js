@@ -1,6 +1,8 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 import {Boxel} from './boxel';
 import {Bullet} from './bullet';
+import {soundEffect} from './sound';
+//const {soundEffect} = require('./sound');
 
 function Player({config, entities}) {
   let {boxel} = Boxel({config});
@@ -42,6 +44,7 @@ function Player({config, entities}) {
   };
   this.shoot = function () {
     let bullet = Bullet(boxel);
+    pewpew();
     // TODO: Mesh position is center of block!
     bullet.mesh.position.set(this.mesh.position.x + 2 * config.blockWidth, this.mesh.position.y + 4 * config.blockHeight, this.mesh.position.z);
     entities.add(bullet);
@@ -92,6 +95,24 @@ function Player({config, entities}) {
   this.speed = {x: 0, y: 0};
   this.tags = ['player'];
   return this;
+  function pewpew() {
+    soundEffect(
+      1046.5, //frequency
+      0, //attack
+      0.3, //decay
+      'sawtooth', //waveform
+      0.2, //Volume
+      -0.8, //pan
+      0, //wait before playing
+      1200, //pitch bend amount
+      false, //reverse bend
+      0, //random pitch range
+      25, //dissonance
+      [0.2, 0.2, 2000], //echo: [delay, feedback, filter]
+      undefined, //reverb: [duration, decay, reverse?]
+      3 //Maximum duration of sound, in seconds
+    );
+  }
 }
 
 export {Player};

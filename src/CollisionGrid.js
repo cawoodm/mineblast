@@ -28,7 +28,7 @@ function Collider(config) {
       for (let x = X1; x < X2 && x < this.grid[0].length; x++) {
         if (this.grid[y][x].indexOf(obj) < 0) {
           if (obj.id === 'boxel_133') {
-            console.log('Adding boxel_133', y, x);
+            // console.log('Adding boxel_133', y, x);
           }
           this.grid[y][x].push(obj);
         }
@@ -63,7 +63,7 @@ function Collider(config) {
     let Y2 = Math.ceil((objHeight + obj.y) / H);
     for (let y = Y1; y < Y2 && y < this.grid.length; y++)
       for (let x = X1; x < X2 && x < this.grid[0].length; x++) {
-        if (obj.id === 'boxel_133') console.log('Removing boxel_133', y, x);
+        //if (obj.id === 'boxel_133') console.log('Removing boxel_133', y, x);
         removeFromArray(this.grid[y][x], obj);
       }
   };
@@ -75,7 +75,7 @@ function removeFromArray(arr, o) {
   const index = arr.indexOf(o);
   if (index < 0) throw new Error('CollisionGrid cannot remove unknown object', o);
   arr.splice(index, 1);
-  console.log('GridCollider removed', o);
+  // console.log('GridCollider removed', o);
 }
 
 export {Collider};

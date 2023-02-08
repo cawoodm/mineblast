@@ -11,7 +11,6 @@ function Bullet(boxel) {
     // TODO: Replace with a motion system
     this.mesh.position.y += (speed * delta) / 10;
   });
-  console.log('New bullet', me.mesh.id);
   me.id = 'bullet' + Date.now();
   return me;
   // this.mesh = new THREE.Mesh(new THREE.BoxGeometry(config.blockWidth * config.blockScale, config.blockHeight * config.blockScale, 2), mat);

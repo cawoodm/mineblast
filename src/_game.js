@@ -117,7 +117,6 @@ function pause() {
   if (_APP.state.running) _APP.run();
 }
 function debug() {
-  console.log('debug');
   _APP.state.debug = _APP.state.debug === true ? false : true;
 }
 function stats() {
