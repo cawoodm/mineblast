@@ -36,7 +36,7 @@ function Collider(config) {
   };
   this.collides = function (obj) {
     const TOL = 0.0001; // No collision if objects are perfectly aligned
-    if (typeof obj.x !== 'number' || typeof obj.y !== 'number' || typeof obj.w !== 'number' || typeof obj.h !== 'number') throw new Exception('Cannot check collision of object', o);
+    if (typeof obj.x !== 'number' || typeof obj.y !== 'number' || typeof obj.w !== 'number' || typeof obj.h !== 'number') throw new Error('Cannot check collision of object', obj);
     // Narrow search range to only grid overlap zone
     let X1 = Math.floor(obj.x / W);
     let X2 = Math.ceil((objWidth + obj.x) / W);
