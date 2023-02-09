@@ -12,6 +12,7 @@ function Bullet(boxel) {
     this.mesh.position.y += (speed * delta) / 10;
   });
   me.id = 'bullet' + Date.now();
+  me.damage = 0;
   return me;
   // this.mesh = new THREE.Mesh(new THREE.BoxGeometry(config.blockWidth * config.blockScale, config.blockHeight * config.blockScale, 2), mat);
   //this.update =
