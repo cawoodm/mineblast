@@ -27,9 +27,7 @@ function Collider(config) {
     for (let y = Y1; y < Y2 && y < this.grid.length; y++)
       for (let x = X1; x < X2 && x < this.grid[0].length; x++) {
         if (this.grid[y][x].indexOf(obj) < 0) {
-          if (obj.id === 'boxel_133') {
-            // console.log('Adding boxel_133', y, x);
-          }
+          // if (obj.id === 'boxel_133') console.log('Adding boxel_133', y, x);
           this.grid[y][x].push(obj);
         }
       }

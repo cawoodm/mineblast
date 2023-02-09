@@ -18,7 +18,7 @@ function Boxel({config}) {
       let id = 'boxel_' + mesh.id;
       //const box = new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.1), material[1]);
       let [worldX, worldY] = worldPosCenter(x, y);
-      if (id === 'boxel_133') console.log('boxel_133', worldX, worldY);
+      // if (id === 'boxel_133') console.log('boxel_133', worldX, worldY);
       if (mesh) mesh.position.set(worldX, worldY, 0);
       return {
         id,

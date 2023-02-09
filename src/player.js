@@ -2,6 +2,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.mod
 import {Boxel} from './boxel';
 import {Bullet} from './bullet';
 import {soundEffect} from './sound';
+import {easeInOutQuart, recoil} from './easing';
 //const {soundEffect} = require('./sound');
 
 function Player({config, entities}) {
@@ -20,13 +21,9 @@ function Player({config, entities}) {
   for (let i = 0; i < 4; i++)
     for (let j = 0; j < 4; j++) {
       if (!sprite[3 - j][i]) continue;
-      /*
-      let block = new THREE.Mesh(new THREE.BoxGeometry(config.blockWidth * config.blockScale, config.blockHeight * config.blockScale, 2), mat);
-      block.position.set(i * config.blockWidth, j * config.blockHeight, 5);
-      this.mesh.add(block);
-      */
       let box = boxel(i, j, 'player', mat);
       this.boxels.push(box);
+      if (j > 2) box.mesh.name = 'barrel'; // Of the gun
       this.mesh.add(box.mesh);
       //block.castShadow = true;
     }
@@ -42,14 +39,22 @@ function Player({config, entities}) {
     this.start = true;
     // if (this.direction === -1) this.speed.x = 0;
   };
+  this.recoiler = recoiler();
   this.shoot = function () {
     let bullet = Bullet(boxel);
+    console.log(this.mesh);
+    this.recoiler.start(this.mesh.children[5]);
     pewpew();
     // TODO: Mesh position is center of block!
     bullet.mesh.position.set(this.mesh.position.x + 2 * config.blockWidth, this.mesh.position.y + 3 * config.blockHeight, this.mesh.position.z);
     entities.add(bullet);
   };
   this.update = function (delta) {
+    // Gun recoil
+    if (this.recoiler.running) {
+      this.recoiler.update(this.mesh.children[5]);
+      //for (let i = 8; i < 12; i++) console.log(this.mesh.children[i].position);
+    }
     // Easing
     if (this.start) {
       this.timer = Date.now();
@@ -58,8 +63,8 @@ function Player({config, entities}) {
     }
     if (this.direction) {
       let t = Date.now() - this.timer;
-      let maxSpeed = 3;
-      let duration = 300; // 1s
+      let maxSpeed = 4;
+      let duration = 200; // 300ms
       if (t >= duration) {
         this.direction = 0;
         this.speed.x = 0;
@@ -78,20 +83,7 @@ function Player({config, entities}) {
     else this.mesh.position.x = newX;
     //console.log("Player speed", this.mesh.position.x, this.speed.x, (this.speed.x * delta) / 10);
   };
-  function easeInOutQuad(t, b, c, d) {
-    t /= d / 2;
-    if (t < 1) return (c / 2) * t * t + b;
-    t--;
-    return (-c / 2) * (t * (t - 2) - 1) + b;
-  }
-  function easeInOutQuart(t, b, c, d) {
-    let x = t / d;
-    let calc = x < 0.5 ? 8 * x * x * x * x : 1 - Math.pow(-2 * x + 2, 4) / 2;
-    return lerp(b, c, calc);
-  }
-  function lerp(start, end, amt) {
-    return (1 - amt) * start + amt * end;
-  }
+
   this.speed = {x: 0, y: 0};
   this.tags = ['player'];
   return this;
@@ -113,6 +105,33 @@ function Player({config, entities}) {
       2 //Maximum duration of sound, in seconds
     );
   }
+}
+
+function recoiler() {
+  return {
+    running: false,
+    start(mesh) {
+      if (this.running) this.stop(mesh);
+      this.running = true;
+      this.timer = Date.now();
+      this.timerOffset = 0;
+      this.startPosition = {y: mesh.position.y};
+    },
+    update(mesh) {
+      let t = Date.now() - this.timer;
+      let maxY = 3;
+      let duration = 110; // ms
+      if (t >= duration) {
+        console.log('stop at', mesh.position.y, 'should be', this.startPosition.y);
+        return this.stop(mesh);
+      }
+      mesh.position.y = this.startPosition.y - recoil(t, 0, maxY, duration);
+    },
+    stop(mesh) {
+      mesh.position.y = this.startPosition.y;
+      this.running = false;
+    },
+  };
 }
 
 export {Player};
