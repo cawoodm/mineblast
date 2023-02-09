@@ -4,10 +4,7 @@ function Entities({scene, onAdd, onRemove}) {
   return {
     e,
     add: (o) => {
-      if (!Array.isArray(o.tags) && o.tag) {
-        o.tags = [o.tag];
-        delete o.tag;
-      }
+      if (!Array.isArray(o.tags) && o.tags) o.tags = [o.tags];
       if (!o.id) o.id = o.mesh?.uuid || 0;
       if (o.id) indexById[o.id] = o;
       e.push(o);
@@ -16,8 +13,7 @@ function Entities({scene, onAdd, onRemove}) {
     },
     removeById: (id) => {
       let o = indexById[id];
-      if (!o) return; // console.warn('Entities cannot remove unknown object with id', id);
-      //console.log('Entities removeById', id, o);
+      if (!o) return console.warn('Entities cannot remove unknown object with id', id);
       remove(o);
     },
     remove,
@@ -29,14 +25,12 @@ function Entities({scene, onAdd, onRemove}) {
     },
   };
   function remove(o) {
-    // console.log('Entity remove', o.id, o.tags, o);
     delete indexById[o.id];
     const index = e.indexOf(o);
     if (index < 0) throw new Error('Entities cannot remove unknown object', o);
     e.splice(index, 1);
     if (typeof onRemove === 'function') onRemove(o);
     if (o.mesh) {
-      //console.log('Mesh remove', o.mesh.id);
       scene.remove(o.mesh);
     }
   }
