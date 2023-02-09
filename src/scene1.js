@@ -17,7 +17,7 @@ function Scene1({config, scene, entities, player}) {
   for (let x = 0; x < X; x++)
     for (let y = 0; y < Y; y++)
       if (y <= 3) boxi(x, y, ['static', 'floor'], materials.floor);
-      else if (y > Y - 7) boxi(x, y, ['static', 'roof'], materials.roof);
+      else if (y > Y - 20 && Math.random() > 0.25) boxi(x, y, ['static', 'roof'], materials.roof);
 
   // Add a collision box the size of our scene to stop player leaving
   boxi(0, 4, 'boundsLeft', config.showColliders && materials.collider);
