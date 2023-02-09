@@ -39,11 +39,12 @@ function Player({config, entities}) {
     this.start = true;
     // if (this.direction === -1) this.speed.x = 0;
   };
-  this.recoiler = recoiler();
+  //this.recoiler = recoiler(this.mesh.children[5]);
+  this.recoilers = Recoilers([this.mesh.children[4], this.mesh.children[5], this.mesh.children[8], this.mesh.children[9]]);
   this.shoot = function () {
     let bullet = Bullet(boxel);
-    console.log(this.mesh);
-    this.recoiler.start(this.mesh.children[5]);
+    //this.recoilers.start(this.mesh.children[5], this.mesh.children[9]);
+    this.recoilers.start();
     pewpew();
     // TODO: Mesh position is center of block!
     bullet.mesh.position.set(this.mesh.position.x + 2 * config.blockWidth, this.mesh.position.y + 3 * config.blockHeight, this.mesh.position.z);
@@ -51,10 +52,7 @@ function Player({config, entities}) {
   };
   this.update = function (delta) {
     // Gun recoil
-    if (this.recoiler.running) {
-      this.recoiler.update(this.mesh.children[5]);
-      //for (let i = 8; i < 12; i++) console.log(this.mesh.children[i].position);
-    }
+    this.recoilers.update();
     // Easing
     if (this.start) {
       this.timer = Date.now();
@@ -81,7 +79,6 @@ function Player({config, entities}) {
     let newX = this.mesh.position.x + (this.speed.x * delta) / 10;
     if (newX < 0 || newX >= config.XW - 3 * config.blockWidth) this.speed.x = 0;
     else this.mesh.position.x = newX;
-    //console.log("Player speed", this.mesh.position.x, this.speed.x, (this.speed.x * delta) / 10);
   };
 
   this.speed = {x: 0, y: 0};
@@ -107,29 +104,45 @@ function Player({config, entities}) {
   }
 }
 
-function recoiler() {
+function Recoilers(meshes) {
+  const recs = meshes.map((m) => recoiler(m));
   return {
     running: false,
-    start(mesh) {
-      if (this.running) this.stop(mesh);
+    start() {
+      if (this.running) this.stop();
+      recs.forEach((r) => r.start());
       this.running = true;
+    },
+    update() {
+      if (!this.running) return;
+      recs.forEach((r) => r.update());
+    },
+    stop() {
+      recs.forEach((r) => r.stop());
+      this.running = false;
+    },
+  };
+}
+
+function recoiler(m) {
+  const mesh = m;
+  return {
+    start() {
       this.timer = Date.now();
       this.timerOffset = 0;
       this.startPosition = {y: mesh.position.y};
     },
-    update(mesh) {
+    update() {
       let t = Date.now() - this.timer;
-      let maxY = 3;
-      let duration = 110; // ms
+      let maxY = 4;
+      let duration = 120; // ms
       if (t >= duration) {
-        console.log('stop at', mesh.position.y, 'should be', this.startPosition.y);
         return this.stop(mesh);
       }
       mesh.position.y = this.startPosition.y - recoil(t, 0, maxY, duration);
     },
-    stop(mesh) {
+    stop() {
       mesh.position.y = this.startPosition.y;
-      this.running = false;
     },
   };
 }

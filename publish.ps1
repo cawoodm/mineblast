@@ -2,7 +2,7 @@
 [Cmdletbinding()]param($msg)
 if (-not $msg) {throw "Message required!"}
 $ErrorActionPreference = "Stop"
-
+npm run build
 $dest = "../../../cawoodm.github.io/mineblast"
 Remove-Item -Recurse -Force $dest/* 
 Copy-Item -Recurse -Force dist/* $dest

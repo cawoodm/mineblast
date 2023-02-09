@@ -2,6 +2,8 @@
 
 A 2D look game in a 3D world with three.js.
 
+Try it out at [cawoodm.github.io/mineblast](https://cawoodm.github.io/mineblast/)!
+
 ![Screenshot](docs/screen1.png)
 
 ## Goals

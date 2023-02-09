@@ -17,9 +17,7 @@ function recoil(t, b, c, d) {
    */
   let x = t / d;
   let calc = x < 0.5 ? 2 * x : -2 * x + 2;
-  let res = lerp(b, c, calc);
-  console.log('recoil: t=', t, 'b=', b, 'c=', c, 'd=', d, ' ==>', res);
-  return res;
+  return lerp(b, c, calc);
 }
 
 function lerp(start, end, amt) {
