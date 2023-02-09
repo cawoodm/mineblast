@@ -13,7 +13,7 @@ function Entities({scene, onAdd, onRemove}) {
     },
     removeById: (id) => {
       let o = indexById[id];
-      if (!o) return console.warn('Entities cannot remove unknown object with id', id);
+      if (!o) return; // console.warn('Entities cannot remove unknown object with id', id);
       remove(o);
     },
     remove,
