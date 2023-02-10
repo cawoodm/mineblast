@@ -669,7 +669,7 @@ your own library of custom sound effects for games.
 */
 
 // eslint-disable-next-line complexity
-function soundEffect(
+function soundEffect({
   frequencyValue, //The sound's fequency pitch in Hertz
   attack, //The time, in seconds, to fade the sound in
   decay, //The time, in seconds, to fade the sound out
@@ -683,8 +683,8 @@ function soundEffect(
   dissonance, //A value in Hz. It creates 2 dissonant frequencies above and below the target pitch
   echo, //An array: [delayTimeInSeconds, feedbackTimeInSeconds, filterValueInHz]
   reverb, //An array: [durationInSeconds, decayRateInSeconds, reverse]
-  timeout //A number, in seconds, which is the maximum duration for sound effects
-) {
+  timeout, //A number, in seconds, which is the maximum duration for sound effects
+}) {
   //Set the default values
   if (frequencyValue === undefined) frequencyValue = 200;
   if (attack === undefined) attack = 0;
@@ -697,9 +697,7 @@ function soundEffect(
   if (reverse === undefined) reverse = false;
   if (randomValue === undefined) randomValue = 0;
   if (dissonance === undefined) dissonance = 0;
-  if (echo === undefined) echo = undefined;
-  if (reverb === undefined) reverb = undefined;
-  if (timeout === undefined) timeout = undefined;
+  if (timeout === undefined) timeout = 2;
 
   //Create an oscillator, gain and pan nodes, and connect them
   //together to the destination
@@ -891,7 +889,7 @@ function soundEffect(
     //timeout of 2 seconds, which should be enough for most sound
     //effects. Override this in the `soundEffect` parameters if you
     //need a longer sound
-    node.stop(actx.currentTime + wait + 2);
+    node.stop(actx.currentTime + wait + timeout);
   }
 }
 //exports.soundEffect = soundEffect;

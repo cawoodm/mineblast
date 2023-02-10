@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {Boxel} from './boxel';
 import {Bullet} from './bullet';
-import {soundEffect} from './sound';
+import {pewpew} from './soundFX';
 import {easeInOutQuart, recoil} from './easing';
 //const {soundEffect} = require('./sound');
 
@@ -23,7 +23,7 @@ function Player({config, entities}) {
       if (!sprite[3 - j][i]) continue;
       let box = boxel(i, j, 'player', mat);
       this.boxels.push(box);
-      if (j > 2) box.mesh.name = 'barrel'; // Of the gun
+      if (j >= 2) box.mesh.name = 'barrel'; // Of the gun
       this.mesh.add(box.mesh);
       //block.castShadow = true;
     }
@@ -40,7 +40,8 @@ function Player({config, entities}) {
     // if (this.direction === -1) this.speed.x = 0;
   };
   //this.recoiler = recoiler(this.mesh.children[5]);
-  this.recoilers = Recoilers([this.mesh.children[4], this.mesh.children[5], this.mesh.children[8], this.mesh.children[9]]);
+  //this.recoilers = Recoilers([this.mesh.children[4], this.mesh.children[5], this.mesh.children[8], this.mesh.children[9]]);
+  this.recoilers = Recoilers(this.mesh.children.filter((m) => m.name === 'barrel'));
   this.shoot = function () {
     let bullet = Bullet(boxel);
     //this.recoilers.start(this.mesh.children[5], this.mesh.children[9]);
@@ -84,24 +85,6 @@ function Player({config, entities}) {
   this.speed = {x: 0, y: 0};
   this.tags = ['player'];
   return this;
-  function pewpew() {
-    soundEffect(
-      1046.5, //frequency
-      0.01, //attack
-      0.2, //decay
-      'square', // waveform type: "sine", "triangle", "square", "sawtooth"
-      0.2, //Volume
-      -0.8, //pan
-      0, //wait before playing
-      3200, //pitch bend amount
-      false, //reverse bend
-      0, //random pitch range
-      215, //dissonance
-      null, // [0.2, 0.2, 2000], //echo: [delay, feedback, filter]
-      undefined, //reverb: [duration, decay, reverse?]
-      2 //Maximum duration of sound, in seconds
-    );
-  }
 }
 
 function Recoilers(meshes) {
