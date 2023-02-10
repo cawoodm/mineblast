@@ -23,6 +23,21 @@ Gain upgrades to your cannon and find clever and efficient ways of mining whilst
 - Experiment with easing and realistic motion
 - Experiment with pseudo-physics -> _kaboom_, flying particles
 
+## TODOs:
+
+- Rotate cannon
+- Falling crystals
+- Space cavern pixelart background
+- Side-scrolling?
+- Enemies?
+
+## Done
+
+- Shoot pew pew sound
+- Cannon recoil
+- Music
+- Screen shake
+
 ## Dev Setup
 
 ```bash

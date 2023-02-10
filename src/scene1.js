@@ -32,6 +32,7 @@ function Scene1({config, scene, entities, player}) {
     }
     lastY = yRand;
   }
+  // https://pages.mtu.edu/~suits/notefreqs.html
   let loNotes = [82.41, 87.31, 98, 110, 123.47, 130.81, 146.83, 164.81, 174.61, 196.0]; // E2-G3
   let hiNotes = [220.0, 246.94, 261.63, 293.66, 329.63, 349.23, 392, 440]; // A3-A4
   const randomLoNote = () => note(rnda(loNotes));
