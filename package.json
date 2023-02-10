@@ -10,7 +10,8 @@
   "author": "Marc Cawood",
   "license": "ISC",
   "dependencies": {
-    "stats.js": "^0.17.0"
+    "stats.js": "^0.17.0",
+    "three": "^0.149.0"
   },
   "devDependencies": {
     "eslint": "^8.33.0",

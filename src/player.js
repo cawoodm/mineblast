@@ -1,4 +1,4 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
+import * as THREE from 'three';
 import {Boxel} from './boxel';
 import {Bullet} from './bullet';
 import {soundEffect} from './sound';

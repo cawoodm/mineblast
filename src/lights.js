@@ -1,4 +1,4 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
+import * as THREE from 'three';
 
 let lights = [];
 let light = new THREE.DirectionalLight(0xffffff, 1.0);

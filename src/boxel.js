@@ -1,4 +1,4 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
+import * as THREE from 'three';
 /**
  * A "boxel" is like a pixel but bigger
  * It has a grid collider and can be visible or invisible

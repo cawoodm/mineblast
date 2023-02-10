@@ -1,4 +1,4 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
+import * as THREE from 'three';
 import Stats from 'stats.js';
 // import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/controls/OrbitControls.js';
 import {lights} from './lights';
@@ -11,8 +11,8 @@ import {Scene1} from './scene1';
 import {Collider} from './CollisionGrid';
 
 const config = {
-  XW: 320,
-  YH: 240,
+  XW: 256,
+  YH: 224,
   blockWidth: 5,
   blockHeight: 5,
   blockScale: 0.8,
@@ -29,7 +29,8 @@ function Game() {
   G.entities = new Entities({onAdd, onRemove, scene: G.scene});
   G.renderer = new Renderer(G.config);
   G.state = {running: false};
-  G.camera = Camera(G.config.XW, G.config.YH, G.config.windowScale, G.config.windowAspect);
+  const cameraEntity = Camera(G.config.XW, G.config.YH, G.config.windowScale, G.config.windowAspect);
+  G.camera = cameraEntity.camera;
   G.player = new Player(G);
   G.state = {};
 
@@ -39,6 +40,7 @@ function Game() {
   entities.add(systems.gridCollider);
   scene.add(G.player.mesh);
   entities.add(G.player);
+  entities.add(cameraEntity);
 
   Scene1({config, scene, entities, player});
 
@@ -106,6 +108,7 @@ function Game() {
 
 function shoot() {
   _APP.player.shoot();
+  _APP.entities.getById('camera').shake(new THREE.Vector3(1, -1, 0), 250);
 }
 function pause() {
   _APP.state.running = _APP.state.running === true ? false : true;

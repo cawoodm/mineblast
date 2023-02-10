@@ -1,4 +1,5 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
+import * as THREE from 'three';
+import {CameraShake} from './CameraShake';
 
 function Camera(w, h, scale, aspect) {
   let viewBlock = (0.75 * w) / 2;
@@ -12,7 +13,17 @@ function Camera(w, h, scale, aspect) {
     camera = new THREE.PerspectiveCamera(60, aspect, 1.0, 1000.0);
     camera.position.set(w / 2, h / 2, 300);
   }
-  return camera;
+  let cameraShake = CameraShake();
+  return {
+    camera,
+    id: 'camera',
+    update() {
+      cameraShake.update(camera);
+    },
+    shake(vecToAdd, milliseconds) {
+      cameraShake.shake(camera, vecToAdd, milliseconds);
+    },
+  };
 }
 
 export {Camera};
