@@ -1,6 +1,6 @@
 #!/bin/pwsh
 [Cmdletbinding()]param($msg)
-if (-not $msg) {throw "Message required!"}
+if (-not $msg) {$msg = Get-Date -f 'YYYY-MM-dd'}
 $ErrorActionPreference = "Stop"
 npm run build
 $dest = "../../../cawoodm.github.io/mineblast"
