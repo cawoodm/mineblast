@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import Stats from 'stats.js';
+// import Stats from 'stats.js';
 // import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/controls/OrbitControls.js';
 import {lights} from './lights';
 import {Renderer} from './renderer';
@@ -9,6 +9,7 @@ import {background} from './background';
 import {Player} from './player';
 import {Scene1} from './scene1';
 import {Collider} from './CollisionGrid';
+import {Controls} from './controls';
 
 const config = {
   XW: 256,
@@ -53,6 +54,7 @@ function Game() {
   // controls.target.set(160, 120, 0);
   // controls.update();
   // scene.add(new THREE.AxesHelper(5));
+  let {keypress, swipeStart, swipeEnd, swipeMove} = Controls(this);
 
   document.addEventListener('keydown', keypress.bind(this), false);
   document.addEventListener('resize', windowResize.bind(this), false);
@@ -78,7 +80,6 @@ function Game() {
       this.state.timestamp = 0;
       return;
     }
-    // requestAnimationFrame(function sloop() {stats.update(); requestAnimationFrame(sloop)});
     this.update(timestamp);
     this.render();
     window.requestAnimationFrame(this.loop.bind(this));
@@ -93,6 +94,20 @@ function Game() {
         if (++bullet.damage > 2) entities.removeById(bullet.id);
       });
     });
+  };
+  this.shoot = () => {
+    this.player.shoot();
+    this.entities.getById('camera').shake(new THREE.Vector3(1, -1, 0), 250);
+  };
+  this.pause = () => {
+    this.state.running = this.state.running === true ? false : true;
+    if (this.state.running) this.run();
+  };
+  this.debug = () => {
+    this.state.debug = this.state.debug === true ? false : true;
+  };
+  this.toggleStats = () => {
+    this.stats.dom.style.display = this.stats.dom.style.display === 'none' ? '' : 'none';
   };
   Object.assign(this, G);
   this.run();
@@ -109,56 +124,6 @@ function Game() {
   }
 }
 
-function shoot() {
-  _APP.player.shoot();
-  _APP.entities.getById('camera').shake(new THREE.Vector3(1, -1, 0), 250);
-}
-function pause() {
-  _APP.state.running = _APP.state.running === true ? false : true;
-  if (_APP.state.running) _APP.run();
-}
-function debug() {
-  _APP.state.debug = _APP.state.debug === true ? false : true;
-}
-function stats() {
-  _APP.stats.dom.style.display = _APP.stats.dom.style.display === 'none' ? '' : 'none';
-}
-function swipeStart(e) {
-  if (!this.state.running) return;
-  if (!e.touches) return;
-  this.state.swipeX = e.touches[0].clientX;
-}
-function swipeEnd() {
-  if (this.state.swipeX !== null) shoot();
-}
-function swipeMove(e) {
-  if (!this.state.running) return;
-  if (!e.touches) return;
-  if (this.state.swipeX === null) return;
-  let deltaX = e.touches[0].clientX - this.state.swipeX;
-  if (deltaX > 8) this.player.right();
-  else if (deltaX < -8) this.player.left();
-  this.state.swipeX = null;
-}
-// eslint-disable-next-line complexity
-function keypress(e) {
-  let res = null;
-  if (!e.altKey && !e.ctrlKey) {
-    if (['ArrowUp', 'KeyW'].includes(e.code)) res = shoot();
-    else if (['ArrowLeft', 'KeyA'].includes(e.code)) res = this.player.left();
-    else if (['ArrowRight', 'KeyD'].includes(e.code)) res = this.player.right();
-    else if (e.code === 'KeyS') res = console.log(this.scene);
-    else if (e.code === 'KeyP') res = pause();
-    else if (e.code === 'KeyX') res = debug();
-    else if (e.code === 'KeyO') res = stats();
-    else return;
-  } else return;
-  if (res === null) {
-    e.preventDefault();
-    dp('Unhandled keypress', e);
-  }
-  return res;
-}
 function dp() {
   if (_APP.state.debug) console.log(...arguments);
 }
@@ -173,11 +138,13 @@ let _APP = null;
 
 window.addEventListener('DOMContentLoaded', () => {
   _APP = new Game();
-  _APP.stats = new Stats();
-  document.body.appendChild(_APP.stats.dom);
-  requestAnimationFrame(function sloop() {
-    _APP.stats.update();
-    requestAnimationFrame(sloop);
-  });
+  //_APP.stats = new Stats();
+  if (_APP.stats) {
+    document.body.appendChild(_APP.stats.dom);
+    requestAnimationFrame(function sloop() {
+      _APP.stats.update();
+      requestAnimationFrame(sloop);
+    });
+  }
   window._APP = _APP;
 });
