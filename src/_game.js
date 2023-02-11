@@ -54,8 +54,11 @@ function Game() {
   // controls.update();
   // scene.add(new THREE.AxesHelper(5));
 
-  window.addEventListener('keydown', keypress.bind(this), false);
-  window.addEventListener('resize', windowResize.bind(this), false);
+  document.addEventListener('keydown', keypress.bind(this), false);
+  document.addEventListener('resize', windowResize.bind(this), false);
+  document.addEventListener('touchstart', swipeStart.bind(this), false);
+  document.addEventListener('touchend', swipeEnd.bind(this), false);
+  document.addEventListener('touchmove', swipeMove.bind(this), false);
   this.update = function (timestamp) {
     let delta = G.state.timestamp ? timestamp - G.state.timestamp : 0;
     this.entities.e.forEach((e) => {
@@ -120,14 +123,31 @@ function debug() {
 function stats() {
   _APP.stats.dom.style.display = _APP.stats.dom.style.display === 'none' ? '' : 'none';
 }
+function swipeStart(e) {
+  if (!this.state.running) return;
+  if (!e.touches) return;
+  this.state.swipeX = e.touches[0].clientX;
+}
+function swipeEnd() {
+  if (this.state.swipeX !== null) shoot();
+}
+function swipeMove(e) {
+  if (!this.state.running) return;
+  if (!e.touches) return;
+  if (this.state.swipeX === null) return;
+  let deltaX = e.touches[0].clientX - this.state.swipeX;
+  if (deltaX > 8) this.player.right();
+  else if (deltaX < -8) this.player.left();
+  this.state.swipeX = null;
+}
 // eslint-disable-next-line complexity
 function keypress(e) {
   let res = null;
   if (!e.altKey && !e.ctrlKey) {
     if (['ArrowUp', 'KeyW'].includes(e.code)) res = shoot();
-    else if (['ArrowLeft', 'KeyA'].includes(e.code)) res = _APP.player.left();
-    else if (['ArrowRight', 'KeyD'].includes(e.code)) res = _APP.player.right();
-    else if (e.code === 'KeyS') res = console.log(_APP.scene);
+    else if (['ArrowLeft', 'KeyA'].includes(e.code)) res = this.player.left();
+    else if (['ArrowRight', 'KeyD'].includes(e.code)) res = this.player.right();
+    else if (e.code === 'KeyS') res = console.log(this.scene);
     else if (e.code === 'KeyP') res = pause();
     else if (e.code === 'KeyX') res = debug();
     else if (e.code === 'KeyO') res = stats();
