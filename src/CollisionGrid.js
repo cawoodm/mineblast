@@ -28,7 +28,7 @@ function Collider(config) {
   };
   this.add = function (obj) {
     // Index object to grid overlap zone
-    if (!obj.id) throw new Error('CollisionGrid cannot index objects without an id', o);
+    if (!obj.id) throw new Error('CollisionGrid cannot index objects without an id', obj);
     this.gridLoop(obj)((x, y) => {
       if (this.grid[y][x].indexOf(obj) < 0) {
         this.grid[y][x].push(obj);

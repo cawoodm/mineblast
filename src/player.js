@@ -18,38 +18,39 @@ function Player({config, entities}) {
     [1, 1, 1, 1],
     [1, 1, 1, 1],
   ];
-  for (let i = 0; i < 4; i++)
+  for (let i = 0; i < 4; i++) {
     for (let j = 0; j < 4; j++) {
       if (!sprite[3 - j][i]) continue;
       let box = boxel(i, j, 'player', mat);
       this.boxels.push(box);
       if (j >= 2) box.mesh.name = 'barrel'; // Of the gun
       this.mesh.add(box.mesh);
-      //block.castShadow = true;
     }
-  this.left = function () {
-    if (this.direction === -1) return; // Already moving left
-    this.direction = -1;
-    this.start = true;
-    //if (this.speed.x >= 0) this.speed.x -= 1;
-  };
-  this.right = function () {
-    if (this.direction === 1) return; // Already moving right
-    this.direction = 1;
-    this.start = true;
-    // if (this.direction === -1) this.speed.x = 0;
-  };
-  //this.recoiler = recoiler(this.mesh.children[5]);
-  //this.recoilers = Recoilers([this.mesh.children[4], this.mesh.children[5], this.mesh.children[8], this.mesh.children[9]]);
+  }
   this.recoilers = Recoilers(this.mesh.children.filter((m) => m.name === 'barrel'));
   this.shoot = function () {
     let bullet = Bullet(boxel);
-    //this.recoilers.start(this.mesh.children[5], this.mesh.children[9]);
     this.recoilers.start();
     pewpew();
     // TODO: Mesh position is center of block!
     bullet.mesh.position.set(this.mesh.position.x + 2 * config.blockWidth, this.mesh.position.y + 3 * config.blockHeight, this.mesh.position.z);
     entities.add(bullet);
+  };
+  this.push = function (force) {
+    this.acceleration += force;
+    this.start = true;
+  };
+  this.left = function (force = 1) {
+    this.direction = -1;
+    this.start = true;
+    this.force = force;
+    //if (this.speed.x >= 0) this.speed.x -= 1;
+  };
+  this.right = function (force = 1) {
+    this.direction = 1;
+    this.start = true;
+    this.force = force;
+    // if (this.acceleration === -1) this.speed.x = 0;
   };
   this.update = function (delta) {
     // Gun recoil
@@ -65,10 +66,11 @@ function Player({config, entities}) {
       let maxSpeed = 4;
       let duration = 200; // 300ms
       if (t >= duration) {
+        this.acceleration = 0;
         this.direction = 0;
         this.speed.x = 0;
       } else {
-        this.speed.x = this.direction * easeInOutQuart(t, 0, maxSpeed, duration);
+        this.speed.x = this.force * this.direction * easeInOutQuart(t, 0, maxSpeed, duration);
       }
     }
     // Update collision grid of my boxels

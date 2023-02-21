@@ -7,9 +7,12 @@ import {Entities} from './entities';
 import {Camera} from './camera';
 import {background} from './background';
 import {Player} from './player';
-import {Scene1} from './scene1';
-import {Collider} from './CollisionGrid';
 import {Controls} from './controls';
+// Systems
+import {Collider} from './CollisionGrid';
+import {Lifetime} from './Lifetime';
+// Scenes
+import {Scene1} from './scene1';
 
 const config = {
   XW: 256,
@@ -39,6 +42,8 @@ function Game() {
 
   systems.gridCollider = new Collider(config);
   entities.add(systems.gridCollider);
+  systems.lifetimeManager = new Lifetime();
+  entities.add(systems.lifetimeManager);
   scene.add(G.player.mesh);
   entities.add(G.player);
   entities.add(cameraEntity);
@@ -95,6 +100,12 @@ function Game() {
       });
     });
   };
+  systems.lifetimeManager.update = function (delta) {
+    let deceased = this.tick(delta);
+    deceased.forEach((id) => {
+      G.entities.removeById(id);
+    });
+  };
   this.shoot = () => {
     this.player.shoot();
     this.entities.getById('camera').shake(new THREE.Vector3(1, -1, 0), 250);
@@ -118,6 +129,7 @@ function Game() {
     e.boxels?.forEach((b) => {
       systems.gridCollider.add({...b.collider.grid, tags: e.tags});
     });
+    if (e.tags?.includes('bullet')) systems.lifetimeManager.add(e, 3000);
   }
   function onRemove(e) {
     if (e.collider?.grid && e.tags.includes('static')) systems.gridCollider.remove(e.collider.grid);

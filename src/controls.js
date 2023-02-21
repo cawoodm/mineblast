@@ -1,21 +1,30 @@
+import {invlerp} from './common';
 export function Controls(game) {
   return {
     swipeStart(e) {
       if (!this.state.running) return;
       if (!e.touches) return;
-      this.state.swipeX = e.touches[0].clientX;
+      this.state.swipe = {x: e.touches[0].clientX, y: e.touches[0].clientY};
     },
     swipeEnd() {
-      if (this.state.swipeX !== null) game.shoot();
+      if (this.state.swipe.x !== null) game.shoot();
     },
     swipeMove(e) {
       if (!this.state.running) return;
       if (!e.touches) return;
-      if (this.state.swipeX === null) return;
-      let deltaX = e.touches[0].clientX - this.state.swipeX;
-      if (deltaX > 8) this.player.right();
-      else if (deltaX < -8) this.player.left();
-      this.state.swipeX = null;
+      if (this.state.swipe.x === null) return;
+      let delta = {x: e.touches[0].clientX - this.state.swipe.x, y: e.touches[0].clientY - this.state.swipe.y};
+      if (Math.abs(delta.y) > Math.abs(delta.x)) {
+        // Mainly vertical swipe
+        // console.log('Vertical', delta);
+      } else {
+        // Mainly horizontal swipe
+        //console.log('Horizontal', delta.x);
+        let xPower = Math.min(invlerp(0, 20, Math.abs(delta.x)), 1);
+        if (delta.x > 4) this.player.right(xPower);
+        else if (delta.x < 4) this.player.left(xPower);
+      }
+      this.state.swipe = {x: null, y: null};
     },
     // eslint-disable-next-line complexity
     keypress(e) {
