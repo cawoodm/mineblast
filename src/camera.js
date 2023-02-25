@@ -6,7 +6,7 @@ function Camera(w, h, scale, aspect) {
   let camera;
   let ortho = true;
   if (ortho) {
-    camera = new THREE.OrthographicCamera(-viewBlock * aspect, viewBlock * aspect, viewBlock, -viewBlock, 100, -100);
+    camera = new THREE.OrthographicCamera(-viewBlock * aspect, viewBlock * aspect, viewBlock, -viewBlock, 1, 1000);
     //camera.setViewOffset(0, 0, w, h);
     camera.position.set(w / 2, h / 2, 100);
   } else {

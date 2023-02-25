@@ -1,13 +1,14 @@
 import * as THREE from 'three';
 import {Boxel} from './boxel';
+import {Background} from './background';
 import {note} from './soundFX';
 import {rnda} from './common';
 
 function Scene1({config, scene, entities, player}) {
   const materials = {
     floor: new THREE.MeshStandardMaterial({color: 0x338833}),
-    roof: new THREE.MeshStandardMaterial({color: 0xcccccc}),
-    crystal: new THREE.MeshStandardMaterial({color: 0x4477dd}),
+    roof: new THREE.MeshStandardMaterial({color: 0x563b30, transparent: false}),
+    crystal: new THREE.MeshStandardMaterial({color: 0x4477dd, transparent: false, opacity: 1}),
     collider: new THREE.MeshStandardMaterial({color: 0x880000, transparent: true, opacity: 0.5}),
   };
 
@@ -41,9 +42,11 @@ function Scene1({config, scene, entities, player}) {
   window.setInterval(randomLoNote, 4000);
   window.setInterval(randomHiNote, 2100);
   // Add a collision box the size of our scene to stop player leaving
-  boxi(0, 4, 'boundsLeft', config.showColliders && materials.collider);
+  // boxi(0, 4, 'boundsLeft', config.showColliders && materials.collider);
 
   player.mesh.position.set(...worldPos(10, 4), 0);
+
+  scene.add(new Background(config));
 
   function boxi(x, y, tags, mat) {
     entities.add(boxel(x, y, tags, mat));

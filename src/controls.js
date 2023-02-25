@@ -45,5 +45,17 @@ export function Controls(game) {
       }
       return res;
     },
+    keyunpress(e) {
+      let res = null;
+      if (!e.altKey && !e.ctrlKey) {
+        if (['ArrowLeft', 'KeyA'].includes(e.code)) res = this.player.left(0);
+        else if (['ArrowRight', 'KeyD'].includes(e.code)) res = this.player.right(0);
+      } else return;
+      if (res === null) {
+        e.preventDefault();
+        // dp('Unhandled keypress', e);
+      }
+      return res;
+    },
   };
 }

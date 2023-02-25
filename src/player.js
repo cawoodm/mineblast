@@ -11,7 +11,7 @@ function Player({config, entities}) {
   this.speed = {x: 0, y: 0};
   this.mesh = new THREE.Group();
   this.boxels = [];
-  let mat = new THREE.MeshStandardMaterial({color: 0xff00ff}); // , opacity: 0.5, transparent: true });
+  let mat = new THREE.MeshStandardMaterial({color: 0xcc00cc}); // , opacity: 0.5, transparent: true });
   let sprite = [
     [0, 1, 1, 0],
     [0, 1, 1, 0],
@@ -41,16 +41,25 @@ function Player({config, entities}) {
     this.start = true;
   };
   this.left = function (force = 1) {
+    // if (typeof force === 'undefined') {
+    //   this.direction = -1;
+    //   this.start = true;
+    //   this.force = force;
+    // } else if (force === 0) {
+    //   // Stop applying keyboard force
+    //   this.direction = 0;
+    //   this.start = false;
+    //   this.force = 0;
+    // } else {
+    //   // Force applied from swipe
     this.direction = -1;
     this.start = true;
     this.force = force;
-    //if (this.speed.x >= 0) this.speed.x -= 1;
   };
   this.right = function (force = 1) {
     this.direction = 1;
     this.start = true;
     this.force = force;
-    // if (this.acceleration === -1) this.speed.x = 0;
   };
   this.update = function (delta) {
     // Gun recoil

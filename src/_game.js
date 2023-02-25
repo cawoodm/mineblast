@@ -1,11 +1,10 @@
 import * as THREE from 'three';
 // import Stats from 'stats.js';
-// import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/controls/OrbitControls.js';
+import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.118/examples/jsm/controls/OrbitControls.js';
 import {lights} from './lights';
 import {Renderer} from './renderer';
 import {Entities} from './entities';
 import {Camera} from './camera';
-import {background} from './background';
 import {Player} from './player';
 import {Controls} from './controls';
 // Systems
@@ -50,8 +49,6 @@ function Game() {
 
   Scene1({config, scene, entities, player});
 
-  scene.add(background);
-
   lights.forEach((light) => scene.add(light));
 
   // scene.add(new THREE.CameraHelper(camera));
@@ -59,9 +56,10 @@ function Game() {
   // controls.target.set(160, 120, 0);
   // controls.update();
   // scene.add(new THREE.AxesHelper(5));
-  let {keypress, swipeStart, swipeEnd, swipeMove} = Controls(this);
+  let {keyunpress, keypress, swipeStart, swipeEnd, swipeMove} = Controls(this);
 
   document.addEventListener('keydown', keypress.bind(this), false);
+  document.addEventListener('keyup', keyunpress.bind(this), false);
   document.addEventListener('resize', windowResize.bind(this), false);
   document.addEventListener('touchstart', swipeStart.bind(this), false);
   document.addEventListener('touchend', swipeEnd.bind(this), false);

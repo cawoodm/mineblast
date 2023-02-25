@@ -43,4 +43,11 @@ Gain upgrades to your cannon and find clever and efficient ways of mining whilst
 ```bash
 # npm i -g eslint vite
 npm i
+vite
+```
+
+To view from internet/device:
+
+```bash
+ngrok http 5173
 ```
